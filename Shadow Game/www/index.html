@@ -18,7 +18,14 @@
                 <div id="zone_3" class="zone"></div>
                 <div id="background"></div>
                 
-                <div class="obstacle"></div>
+                <div id="menu"></div>
+                <div id="crash">
+                	<h1>GAME OVER</h1>
+                    <h2>Score : <i></i> points</h2>
+                    <button type="button" id="btReload">Recommencer</button>
+                </div>
+                
+                <div id="obstacles"></div>
             </div>
         </div>
     	
@@ -36,17 +43,64 @@
 			var zoneWidth = $(".zone").width();
 			var zoneHeight = $(".zone").height();
 			var distanceObstacle = zoneHeight+200;
-			var zoneCurr = 2;
-			$("#hero").html(zoneCurr);
+			var zoneCurr=2
+			var crash=0;
+			var time=0;
+			var hero_health_point=3;
+			var hero_nodegat=0;
 			
-			function moveObstacle(){
-				$(".obstacle").animate({
-						bottom: "+="+distanceObstacle+"px",
-					}, 10000, "linear", function() {
-						$(".obstacle").css("bottom", "-200px");
-						moveObstacle();
-				});
+			function game_framerate() {
+				time++;
+				if(hero_health_point>0) setTimeout(game_framerate, 100);
+				crash=0;
+				check_obstacles();
+				
+				$("#menu").text(time+" points ("+crash+")");
+				$("#hero").html("Z="+zoneCurr+" / HP="+hero_health_point);
+				
+				if(crash==1) crash_obstacle();
 			}
+			game_framerate();
+			
+			function crash_obstacle(){
+				if(hero_nodegat==0){
+					
+					hero_nodegat=1;
+					$("#hero").addClass("hero_nodegat");
+					setTimeout(function(){
+						hero_nodegat=0;
+						$("#hero").removeClass("hero_nodegat");
+					},3000);
+					
+					hero_health_point--;
+					if(hero_health_point==0){
+						$("#crash i").text(time);
+						$("#crash").fadeIn(100);
+					}
+				}
+			}
+			
+			function check_obstacles(){
+				$(".obstacle").each(function(index, element){
+					var position = $(element).position();
+					var obstacleZone = $(element).attr("data-zone");
+                	if(position.top<160 && position.top>-40){
+						if(zoneCurr==obstacleZone) crash=1;
+						$(element).children("span").text(position.top+" (danger)");
+					}else if(position.top<-100){
+						$(element).remove();
+					}
+					else{
+						$(element).children("span").text(position.top+" (safe)");
+					}
+                });
+			}
+			
+			function generate_obstacle(){
+					var random_zone = Math.floor((Math.random() * 3) + 1);
+					$("#obstacles").append('<div class="obstacle obstacle_zone_'+random_zone+' obstacle_type_rocher" data-zone="'+random_zone+'">Z='+random_zone+'<br><span></span></div>');
+			}
+			setInterval("generate_obstacle()", 2000);
 			
 			swipedetect(document, function(swipedir){
 				if(swipedir =='left'){
@@ -65,7 +119,9 @@
 				}
 			});
 			
-			moveObstacle();
+			$("#btReload").on("touchstart", function(){
+				window.location.reload();
+			});
         </script>
     </body>
 </html>

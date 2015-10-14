@@ -41,10 +41,30 @@ body {
 	width:100vw;
 	height:100vh;
 }
+#menu {
+	position:absolute;
+	top:0;
+	width:100vw;
+	height:50px;
+	line-height:50px;
+	text-align:center;
+	z-index:100;
+}
+#crash {
+	display:none;
+	position:absolute;
+	top:40vh;
+	width:100vw;
+	background:red;
+	text-align:center;
+	font-size:36px;
+	z-index:111;
+}
 #background {
 	background:url('../img/bg_test.png');
+	background-size:100%;
 	width:100vw;
-	height:300vh;
+	height:400vh;
 	animation-name:moving_background;
 	animation-duration:40s;
 	animation-timing-function: linear;
@@ -64,6 +84,17 @@ body {
 	height:100px;
 	z-index:98;
 }
+.hero_nodegat {
+	animation-name:hero_nodegat;
+	animation-duration:1s;
+	animation-timing-function: ease;
+	animation-iteration-count:infinite;
+}
+@keyframes hero_nodegat {
+	0% {opacity:0.5;}
+	50% {opacity:0.2;}
+	100% {opacity:0.5;}
+}
 
 .zone {
 	position:absolute;
@@ -74,21 +105,44 @@ body {
 
 #zone_danger{
 	position:absolute;
-	top:0;
-	background:rgba(255,0,0,0.5);
+	top:60px;
+	background:rgba(255,0,0,0.4);
 	width:100vw;
-	height:160px;
+	height:100px;
 	z-index:88;
+}
+
+#btReload {
+	background:orange;
+	padding:4px;
+	border:none;
+	font-size:26px;
 }
 
 .obstacle {
 	position:absolute;
 	bottom:-200px;
-	left:33.33333333333%;
 	background:pink;
 	width:33.33333333333%;
 	height:100px;
+	animation-name:moving_obstacle;
+	animation-timing-function: linear;
 	z-index:99;
+}
+.obstacle_zone_1 {
+	left:0;
+}
+.obstacle_zone_2 {
+	left:33.33333333333%;
+}
+.obstacle_zone_3 {
+	left:66.66666666665%;
+}
+.obstacle_type_rocher{animation-duration:10s;}
+
+@keyframes moving_obstacle {
+	from {-webkit-transform: translateY(0px);}
+	to {-webkit-transform: translateY(-150vh);}
 }
 
 /* Landscape layout (with min-width) */

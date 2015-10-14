@@ -75,7 +75,7 @@ function swipedetect(el, callback){
 	touchsurface.addEventListener('touchmove', function(e){
 		e.preventDefault() // prevent scrolling when inside DIV
 	}, false)
-  
+ 
 	touchsurface.addEventListener('touchend', function(e){
 		var touchobj = e.changedTouches[0]
 		distX = touchobj.pageX - startX // get horizontal dist traveled by finger while in contact with surface
