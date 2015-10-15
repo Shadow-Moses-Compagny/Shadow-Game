@@ -5,11 +5,12 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
+        <title>Shadow Game</title>
     </head>
     <body>
-    
+    <div id="debug" style="position:absolute;bottom:0;height:50px;background:#fff;z-index:999;"></div>
     	<div id="wrapper">
+        	<div id="loading"></div>
         	<div id="stage">
             	<div id="hero"></div>
                 <div id="zone_danger"></div>
@@ -25,6 +26,8 @@
                     <button type="button" id="btReload">Recommencer</button>
                 </div>
                 
+                <div id="levelup"></div>
+                
                 <div id="obstacles"></div>
             </div>
         </div>
@@ -39,32 +42,102 @@
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript">
-            app.initialize();
+            app.initialize();			
 			var zoneWidth = $(".zone").width();
 			var zoneHeight = $(".zone").height();
 			var distanceObstacle = zoneHeight+200;
 			var zoneCurr=2
 			var crash=0;
-			var time=0;
-			var hero_health_point=3;
+			var points=0;
+			
+			//HERO
+			var hero_personnage=0;
+			var hero_level=0;
+			var hero_health_point=0;
+			var hero_force=0;
+			var hero_defense=0;
+			var hero_experience=0;
 			var hero_nodegat=0;
 			
+			//PERSONNAGES
+			var personnages = new Array();
+			//Paramètres personnage
+			//0:prochain niveau
+			//1:force
+			//2:defense
+			//3:vie
+			personnages[0] = new Array();
+			personnages[0][1] = [10,1,1,3];
+			personnages[0][2] = [25,1,1,3];
+			personnages[0][3] = [25,1,1,2];
+			personnages[0][4] = [50,1,1,1];
+			personnages[0][5] = [9999,1,1,1];
+			
+			//STAGES
+			var stages = new Array();
+			//Paramètres stage
+			//0:background
+			//1:palier de difficulte
+			//2:palier de vitesse
+			stages['test'] = ["#FFF url('img/bg_test_"+zoneHeight+".png')",10000,30000];
+			
+			//OBSTACLES
+			var obstacles = new Array();
+			//Paramètres obstacle
+			//0:background
+			//1:force
+			//2:defense
+			//3:renvoi de dégats (0:si detruit n'attaque pas / 1:attaque même si détruit)
+			//4:experience
+			//5:points
+			obstacles[0] = ["gray",1,999,1,0,0];
+			obstacles[1] = ["green",1,1,0,1,10];
+			
+			//PROCEDURALE
+			var procedure_id=1;
+			var procedure_curr=0;
+			var procedure_frequence=0;
+			var procedure_speed=10;
+			var procedure_time = Math.round((procedure_speed*100)/(parseFloat(zoneHeight)*1.5)*10)/10;//procedure_speed*100 = 10s animation obstacle * 100px zone de danger
+			var procedure_dificulte=3;
+			
+			var procedure = new Array();
+			///////////////[ID ZONE-ID OBSTACLE]
+			procedure[1] = ['1-1','x','x'];
+			procedure[2] = ['2-1','x','x'];
+			procedure[3] = ['3-1','x','x'];
+			procedure[4] = ['1-0','x','x'];
+			procedure[5] = ['2-0','x','x'];
+			procedure[6] = ['3-0','x','x'];
+			procedure[7] = ['1-0|2-0','x','x'];
+			procedure[8] = ['2-0|3-0','x','x'];
+			procedure[9] = ['1-0|3-0','x','x'];
+			procedure[10] = ['1-0','2-0','x','3-0','x','x'];
+			procedure[11] = ['3-0','2-0','x','1-0','x','x'];
+			procedure[12] = ['2-0','1-0','x','x'];
+			
 			function game_framerate() {
-				time++;
+				points++;
 				if(hero_health_point>0) setTimeout(game_framerate, 100);
 				crash=0;
 				check_obstacles();
 				
-				$("#menu").text(time+" points ("+crash+")");
-				$("#hero").html("Z="+zoneCurr+" / HP="+hero_health_point);
+				$("#menu").text(points+" points ("+crash+")");
+				$("#hero").html("LVL="+hero_level+" | HP="+hero_health_point+" | F="+hero_force+" | D="+hero_defense+" | XP="+hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
 				
 				if(crash==1) crash_obstacle();
+				
+				procedure_frequence=Math.round((procedure_frequence+0.1)*100)/100;
+				if(procedure_frequence>=procedure_time){
+					procedure_frequence=0;
+					generate_obstacle(procedure_id, procedure_curr);
+				}
+				
+				$("#debug").text("D="+procedure_dificulte+" / S="+procedure_speed);
 			}
-			game_framerate();
 			
 			function crash_obstacle(){
-				if(hero_nodegat==0){
-					
+				if(hero_nodegat==0){//FRAMES D'INVULNERABILITE				
 					hero_nodegat=1;
 					$("#hero").addClass("hero_nodegat");
 					setTimeout(function(){
@@ -74,7 +147,7 @@
 					
 					hero_health_point--;
 					if(hero_health_point==0){
-						$("#crash i").text(time);
+						$("#crash i").text(points);
 						$("#crash").fadeIn(100);
 					}
 				}
@@ -84,8 +157,22 @@
 				$(".obstacle").each(function(index, element){
 					var position = $(element).position();
 					var obstacleZone = $(element).attr("data-zone");
+					var obstacleID = $(element).attr("data-obstacle");
                 	if(position.top<160 && position.top>-40){
-						if(zoneCurr==obstacleZone) crash=1;
+						if(zoneCurr==obstacleZone){
+							
+							//ATTAQUE
+							var degats_sur_obstacle = obstacles[obstacleID][2]-hero_force;
+							if(degats_sur_obstacle>0) crash=1;
+							else{
+								$(element).remove();
+								//GAINS
+								points+=obstacles[obstacleID][5];
+								hero_experience+=obstacles[obstacleID][4];
+								if(hero_experience>=personnages[0][hero_level][0]) levelup();
+								if(obstacles[obstacleID][3]==1) crash=1;
+							}
+						}
 						$(element).children("span").text(position.top+" (danger)");
 					}else if(position.top<-100){
 						$(element).remove();
@@ -96,11 +183,46 @@
                 });
 			}
 			
-			function generate_obstacle(){
-					var random_zone = Math.floor((Math.random() * 3) + 1);
-					$("#obstacles").append('<div class="obstacle obstacle_zone_'+random_zone+' obstacle_type_rocher" data-zone="'+random_zone+'">Z='+random_zone+'<br><span></span></div>');
+			function generate_obstacle(pid, pcurr){
+					if(pcurr==procedure[pid].length){
+						procedure_id = Math.floor((Math.random() * procedure_dificulte) + 1);
+						pid = procedure_id;
+						pcurr=0;
+						procedure_curr=0;
+					}
+					if(procedure[pid][pcurr]!='x'){
+						var obstacle = procedure[pid][pcurr].split("|");
+						for (i = 0; i < obstacle.length; i++){
+							var obstacle_infos = obstacle[i].split("-");
+							$("#obstacles").append('<div class="obstacle obstacle_zone_'+obstacle_infos[0]+'" style="background:'+obstacles[obstacle_infos[1]][0]+';animation-duration:'+procedure_speed+'s;" data-zone="'+obstacle_infos[0]+'" data-obstacle="'+obstacle_infos[1]+'">Z='+obstacle_infos[0]+' / ID='+pid+'<br><span></span></div>');
+						}
+					}
+					procedure_curr++;
 			}
-			setInterval("generate_obstacle()", 2000);
+			
+			function loadStage(stage){
+				$("#background").css("background", stages[stage][0]);
+				setInterval(function(){
+					if(procedure_dificulte<(procedure.length-1))procedure_dificulte++;
+				},stages[stage][1]);
+				setInterval(function(){
+					if(procedure_speed>2){
+						procedure_speed--;
+						procedure_time = Math.round((procedure_speed*100)/(parseFloat(zoneHeight)*1.5)*10)/10;//procedure_speed*100 = 10s animation obstacle * 100px zone de danger
+					}
+				},stages[stage][2]);
+			}
+			
+			function levelup(){
+				hero_level++;
+
+				hero_health_point+=personnages[hero_personnage][hero_level][3];
+				hero_force+=personnages[hero_personnage][hero_level][1];
+				hero_defense+=personnages[hero_personnage][hero_level][2];
+				
+				$("#levelup").text("Votre héro monte au niveau "+hero_level).fadeIn(100);
+				setTimeout(function(){$("#levelup").fadeOut(50);},4000);
+			}
 			
 			swipedetect(document, function(swipedir){
 				if(swipedir =='left'){
@@ -122,6 +244,14 @@
 			$("#btReload").on("touchstart", function(){
 				window.location.reload();
 			});
+			
+			//Initialisation du jeux
+			setTimeout(function(){
+				loadStage('test');
+				levelup();
+				game_framerate();
+				$("#loading").fadeOut(200);
+			},5000);
         </script>
     </body>
 </html>

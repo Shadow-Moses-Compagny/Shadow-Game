@@ -37,6 +37,14 @@ body {
     display:none;
 }
 
+#loading {
+	position:absolute;
+	background:#E8EAF6 url('../img/loader.gif') center center no-repeat;
+	width:100vw;
+	height:100vh;
+	z-index:99;
+}
+
 #stage {
 	width:100vw;
 	height:100vh;
@@ -60,20 +68,29 @@ body {
 	font-size:36px;
 	z-index:111;
 }
+#levelup {
+	display:none;
+	position:absolute;
+	bottom:10vh;
+	width:100vw;
+	background:yellow;
+	text-align:center;
+	font-size:36px;
+	z-index:111;
+}
 #background {
-	background:url('../img/bg_test.png');
 	background-size:100%;
 	width:100vw;
-	height:400vh;
+	height:200vh;
 	animation-name:moving_background;
-	animation-duration:40s;
+	animation-duration:10s;
 	animation-timing-function: linear;
 	animation-iteration-count:infinite;
 	z-index:1;
 }
 @keyframes moving_background {
 	from {-webkit-transform: translateY(0px);}
-	to {-webkit-transform: translateY(-2048px);}
+	to {-webkit-transform: translateY(-100vh);}
 }
 #hero {
 	position:absolute;
@@ -114,15 +131,24 @@ body {
 
 #btReload {
 	background:orange;
-	padding:4px;
+	padding:8px;
 	border:none;
-	font-size:26px;
+	font-size:30px;
 }
 
 .obstacle {
 	position:absolute;
 	bottom:-200px;
-	background:pink;
+	width:33.33333333333%;
+	height:100px;
+	animation-name:moving_obstacle;
+	animation-timing-function: linear;
+	z-index:99;
+}
+.obstacle_debug {
+	position:absolute;
+	bottom:-200px;
+	background:rgba(0,255,0,0.2);
 	width:33.33333333333%;
 	height:100px;
 	animation-name:moving_obstacle;
@@ -138,7 +164,6 @@ body {
 .obstacle_zone_3 {
 	left:66.66666666665%;
 }
-.obstacle_type_rocher{animation-duration:10s;}
 
 @keyframes moving_obstacle {
 	from {-webkit-transform: translateY(0px);}
