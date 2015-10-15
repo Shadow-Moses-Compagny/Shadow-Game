@@ -11,6 +11,16 @@
     <div id="debug" style="position:absolute;bottom:0;height:50px;background:#fff;z-index:999;"></div>
     	<div id="wrapper">
         	<div id="loading"></div>
+            <div id="choix_personnages">
+            	<h1>Stormtrooper</h1>
+            	<div id="blocs_personnage">
+	            	<div class="bloc_personnage personnage_selected" data-name="Stormtrooper" data-blocked="0"><img src="img/characters/stormtrooper.png" alt="Stormtroopeer" /></div>
+    	            <div class="bloc_personnage" data-name="Inconnu" data-blocked="1"><img src="img/characters/inconnu.png" alt="inconnu" /></div>
+        	        <div class="bloc_personnage" data-name="Inconnu" data-blocked="1"><img src="img/characters/inconnu.png" alt="inconnu" /></div>
+            	    <div class="bloc_personnage" data-name="Inconnu" data-blocked="1"><img src="img/characters/inconnu.png" alt="inconnu" /></div>
+                </div>
+                <button id="startGame">Start game !</button>
+            </div>
         	<div id="stage">
             	<div id="hero"></div>
                 <div id="zone_danger"></div>
@@ -51,6 +61,8 @@
 			var points=0;
 			
 			//HERO
+			var hero_name="Inconnu";
+			var hero_blocked=0;
 			var hero_personnage=0;
 			var hero_level=0;
 			var hero_health_point=0;
@@ -80,6 +92,7 @@
 			//1:palier de difficulte
 			//2:palier de vitesse
 			stages['test'] = ["#FFF url('img/bg_test_"+zoneHeight+".png')",10000,30000];
+			stages['desert'] = ["#886753 url('img/backgrounds/desert_"+zoneHeight+".jpg')",10000,30000];
 			
 			//OBSTACLES
 			var obstacles = new Array();
@@ -241,17 +254,37 @@
 				}
 			});
 			
-			$("#btReload").on("touchstart", function(){
+			$("#btReload").on("touchstart click", function(){
 				window.location.reload();
+			});
+			
+			$(".bloc_personnage").on("touchstart click", function(){
+				hero_name = $(this).attr("data-name");
+				hero_blocked = $(this).attr("data-blocked"); 
+				$(".personnage_selected").removeClass('personnage_selected');
+				$(this).addClass('personnage_selected');
+				$("#choix_personnages h1").text(hero_name);
+			});
+			
+			$("#startGame").on("touchstart click", function(){
+				if(hero_blocked==0){
+					var bg_hero = $(".personnage_selected img").attr('src');
+					$("#hero").css('background', 'url('+bg_hero+')');
+					$("#loading").fadeIn(100);
+					setTimeout(function(){
+						$("#choix_personnages").fadeOut(0);
+						$("#loading").fadeOut(200);
+						loadStage('desert');
+						levelup();
+						game_framerate();
+					},1000);
+				}else alert('BLOCKED');
 			});
 			
 			//Initialisation du jeux
 			setTimeout(function(){
-				loadStage('test');
-				levelup();
-				game_framerate();
 				$("#loading").fadeOut(200);
-			},5000);
+			},1000);
         </script>
     </body>
 </html>

@@ -42,7 +42,53 @@ body {
 	background:#E8EAF6 url('../img/loader.gif') center center no-repeat;
 	width:100vw;
 	height:100vh;
-	z-index:99;
+	z-index:999;
+}
+
+#choix_personnages {
+	position:absolute;
+	background:#E8EAF6;
+	width:100vw;
+	height:100vh;
+	z-index:998;
+	text-align:center;
+}
+#choix_personnages h1 {
+	padding:20px 0 0 0;
+	text-align:center;
+	color:#212121;
+	font-weight:bold;
+	text-shadow:0 1px #fff;
+}
+#startGame {
+	background:#0091EA;
+	color:#fff;
+	padding:8px;
+	margin:auto;
+	font-size:24px;
+	font-weight:bold;
+	border:none;
+}
+#blocs_personnage {
+	display:table;
+	width:86vw;
+	margin:0 5vw 5vh 5vw;
+	padding:2vw;
+}
+.bloc_personnage {
+	float:left;
+	background:#fafafa;
+	width:42%;
+	height:100px;
+	margin:2%;
+	padding:2%;
+	box-shadow:0 2px 2px rgba(0,0,0,0.4);
+	text-align:center;
+	transition: 0.1s;
+	transition-timing-function: ease-in;
+}
+.personnage_selected{
+	box-shadow:0 4px 8px rgba(0,0,0,0.4);
 }
 
 #stage {
@@ -96,7 +142,6 @@ body {
 	position:absolute;
 	top:60px;
 	left:33.33333333333%;
-	background:blue;
 	width:33.33333333333%;
 	height:100px;
 	z-index:98;
@@ -123,7 +168,7 @@ body {
 #zone_danger{
 	position:absolute;
 	top:60px;
-	background:rgba(255,0,0,0.4);
+	background:rgba(255,0,0,0);
 	width:100vw;
 	height:100px;
 	z-index:88;
