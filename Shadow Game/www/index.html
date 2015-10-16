@@ -269,7 +269,7 @@
 			$("#startGame").on("touchstart click", function(){
 				if(hero_blocked==0){
 					var bg_hero = $(".personnage_selected img").attr('src');
-					$("#hero").css('background', 'url('+bg_hero+')');
+					$("#hero").css('background', 'url('+bg_hero+') center center no-repeat');
 					$("#loading").fadeIn(100);
 					setTimeout(function(){
 						$("#choix_personnages").fadeOut(0);
