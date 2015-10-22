@@ -103,8 +103,8 @@
 			//3:renvoi de dégats (0:si detruit n'attaque pas / 1:attaque même si détruit)
 			//4:experience
 			//5:points
-			obstacles[0] = ["gray",1,999,1,0,0];
-			obstacles[1] = ["green",1,1,0,1,10];
+			obstacles[0] = ["url('img/enemies/rock_desert.png') center center no-repeat",1,999,1,0,0];
+			obstacles[1] = ["url('img/enemies/herbs_desert.png') center center no-repeat",1,1,0,1,10];
 			
 			//PROCEDURALE
 			var procedure_id=1;
@@ -171,7 +171,7 @@
 					var position = $(element).position();
 					var obstacleZone = $(element).attr("data-zone");
 					var obstacleID = $(element).attr("data-obstacle");
-                	if(position.top<160 && position.top>-40){
+                	if(position.top<140 && position.top>-20){
 						if(zoneCurr==obstacleZone){
 							
 							//ATTAQUE
@@ -214,6 +214,7 @@
 			}
 			
 			function loadStage(stage){
+				$("body").css("background", stages[stage][0]);//FIXE bug flash blanc
 				$("#background").css("background", stages[stage][0]);
 				setInterval(function(){
 					if(procedure_dificulte<(procedure.length-1))procedure_dificulte++;
