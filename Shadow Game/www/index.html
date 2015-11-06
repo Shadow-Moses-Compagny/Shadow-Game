@@ -22,6 +22,11 @@
                 <button id="startGame">Start game !</button>
             </div>
         	<div id="stage">
+            	<div id="gui">
+                	<div id="health_point"></div>
+                    <div id="exp_point"></div>
+                </div>
+                
             	<div id="hero"></div>
                 <div id="zone_danger"></div>
             	<div id="zone_1" class="zone"></div>
@@ -92,7 +97,7 @@
 			//1:palier de difficulte
 			//2:palier de vitesse
 			stages['test'] = ["#FFF url('img/bg_test_"+zoneHeight+".png')",10000,30000];
-			stages['desert'] = ["#886753 url('img/backgrounds/desert_"+zoneHeight+".jpg')",10000,30000];
+			stages['desert'] = ["#d8a702 url('img/backgrounds/desert_"+zoneHeight+".png')",10000,30000];
 			
 			//OBSTACLES
 			var obstacles = new Array();
@@ -103,8 +108,8 @@
 			//3:renvoi de dégats (0:si detruit n'attaque pas / 1:attaque même si détruit)
 			//4:experience
 			//5:points
-			obstacles[0] = ["url('img/enemies/rock_desert.png') center center no-repeat",1,999,1,0,0];
-			obstacles[1] = ["url('img/enemies/herbs_desert.png') center center no-repeat",1,1,0,1,10];
+			obstacles[0] = ["url('img/enemies/blob_vert.png') center center no-repeat",1,999,1,0,0];
+			obstacles[1] = ["url('img/enemies/rubis_vert.png') center center no-repeat",1,1,0,1,10];
 			
 			//PROCEDURALE
 			var procedure_id=1;
@@ -146,7 +151,8 @@
 					generate_obstacle(procedure_id, procedure_curr);
 				}
 				
-				$("#debug").text("D="+procedure_dificulte+" / S="+procedure_speed);
+				//$("#debug").text("D="+procedure_dificulte+" / S="+procedure_speed);
+				$("#debug").text(zoneWidth+"*"+zoneHeight);
 			}
 			
 			function crash_obstacle(){
@@ -159,6 +165,7 @@
 					},3000);
 					
 					hero_health_point--;
+					$("#health_point").text(hero_health_point);
 					if(hero_health_point==0){
 						$("#crash i").text(points);
 						$("#crash").fadeIn(100);
@@ -182,6 +189,7 @@
 								//GAINS
 								points+=obstacles[obstacleID][5];
 								hero_experience+=obstacles[obstacleID][4];
+								$("#exp_point").text(hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
 								if(hero_experience>=personnages[0][hero_level][0]) levelup();
 								if(obstacles[obstacleID][3]==1) crash=1;
 							}
@@ -235,6 +243,8 @@
 				hero_defense+=personnages[hero_personnage][hero_level][2];
 				
 				$("#levelup").text("Votre héro monte au niveau "+hero_level).fadeIn(100);
+				$("#health_point").text(hero_health_point);
+				$("#exp_point").text(hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
 				setTimeout(function(){$("#levelup").fadeOut(50);},4000);
 			}
 			
