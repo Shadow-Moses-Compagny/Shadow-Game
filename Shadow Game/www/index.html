@@ -23,6 +23,7 @@
             </div>
         	<div id="stage">
             	<div id="gui">
+                	<div id="level"></div>
                 	<div id="health_point"></div>
                     <div id="exp_point"></div>
                 </div>
@@ -121,9 +122,9 @@
 			
 			var procedure = new Array();
 			///////////////[ID ZONE-ID OBSTACLE]
-			procedure[1] = ['1-1','x','x'];
-			procedure[2] = ['2-1','x','x'];
-			procedure[3] = ['3-1','x','x'];
+			procedure[1] = ['1-1','1-1','1-1','1-1'];
+			procedure[2] = ['2-1','2-1','2-1','2-1'];
+			procedure[3] = ['3-1','3-1','3-1','3-1'];
 			procedure[4] = ['1-0','x','x'];
 			procedure[5] = ['2-0','x','x'];
 			procedure[6] = ['3-0','x','x'];
@@ -133,6 +134,7 @@
 			procedure[10] = ['1-0','2-0','x','3-0','x','x'];
 			procedure[11] = ['3-0','2-0','x','1-0','x','x'];
 			procedure[12] = ['2-0','1-0','x','x'];
+			procedure[13] = ['1-1','1-1','1-1','1-1','2-1','3-1','3-1','3-1','3-1','1-0|2-1|3-0','1-1','1-1','1-1','1-1'];
 			
 			function game_framerate() {
 				points++;
@@ -140,7 +142,7 @@
 				crash=0;
 				check_obstacles();
 				
-				$("#menu").text(points+" points ("+crash+")");
+				$("#menu").text(points+" pts");
 				$("#hero").html("LVL="+hero_level+" | HP="+hero_health_point+" | F="+hero_force+" | D="+hero_defense+" | XP="+hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
 				
 				if(crash==1) crash_obstacle();
@@ -178,7 +180,7 @@
 					var position = $(element).position();
 					var obstacleZone = $(element).attr("data-zone");
 					var obstacleID = $(element).attr("data-obstacle");
-                	if(position.top<140 && position.top>-20){
+                	if(position.top<180 && position.top>20){
 						if(zoneCurr==obstacleZone){
 							
 							//ATTAQUE
@@ -189,7 +191,8 @@
 								//GAINS
 								points+=obstacles[obstacleID][5];
 								hero_experience+=obstacles[obstacleID][4];
-								$("#exp_point").text(hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
+								var ratio_exp = 75+(245*hero_experience)/personnages[hero_personnage][hero_level][0];///245px 100% largeur
+								$("#exp_point").css("width", ratio_exp);
 								if(hero_experience>=personnages[0][hero_level][0]) levelup();
 								if(obstacles[obstacleID][3]==1) crash=1;
 							}
@@ -237,14 +240,16 @@
 			
 			function levelup(){
 				hero_level++;
+				hero_experience=0;
 
 				hero_health_point+=personnages[hero_personnage][hero_level][3];
 				hero_force+=personnages[hero_personnage][hero_level][1];
 				hero_defense+=personnages[hero_personnage][hero_level][2];
 				
 				$("#levelup").text("Votre héro monte au niveau "+hero_level).fadeIn(100);
+				$("#level").text(hero_level);
 				$("#health_point").text(hero_health_point);
-				$("#exp_point").text(hero_experience+"/"+personnages[hero_personnage][hero_level][0]);
+				$("#exp_point").css("width",75);
 				setTimeout(function(){$("#levelup").fadeOut(50);},4000);
 			}
 			

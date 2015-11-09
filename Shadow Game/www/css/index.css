@@ -69,32 +69,44 @@ body {
 	font-weight:bold;
 	border:none;
 }
+#gui {
+    background: url('../img/gui/stormtrooper_gui.png');
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100px;
+    z-index: 101;
+}
+#level {
+	position: absolute;
+    top: 77px;
+    left: 15px;
+    color: white;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.8);
+    font-weight: bold;
+    font-size: 16px;
+    z-index: 102;
+}
 #health_point {
 	position: absolute;
-    top: 20px;
-    left: 15px;
-    background: url('../img/gui/health_point.png') left center no-repeat;
-    width: 30%;
-    height: 50px;
-    padding: 0px 0 0 64px;
+    top: 77px;
+    left: 78px;
     color: white;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.8);
     font-weight: bold;
-    font-size: 40px;
-    z-index: 101;
+    font-size: 16px;
+    z-index: 102;
 }
 #exp_point {
 	position: absolute;
-    top: 20px;
-    right: 0;
-    background: url('../img/gui/exp_point.png') left center no-repeat;
-    width: 30%;
-    height: 50px;
-    padding: 0px 0 0 64px;
-    color: white;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
-    font-weight: bold;
-    font-size: 40px;
+    top: 0px;
+    left: 0px;
+    background: url('../img/gui/stormtrooper_gui_full.png');
+    width: 0;
+    height: 100px;
+	transition: 0.1s;
+	transition-timing-function: ease-in;
     z-index: 101;
 }
 #blocs_personnage {
@@ -125,11 +137,15 @@ body {
 }
 #menu {
 	position:absolute;
-	top:0;
-	width:100vw;
+	top:4px;
+	right:15px;
 	height:50px;
+	margin-right:15px;
 	line-height:50px;
-	text-align:center;
+	color: white;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+    font-weight: bold;
+    font-size: 16px;
 	z-index:100;
 }
 #crash {
@@ -168,7 +184,7 @@ body {
 }
 #hero {
 	position:absolute;
-	top:60px;
+	top:100px;
 	left:33.33333333333%;
 	width:33.33333333333%;
 	height:100px;
@@ -195,8 +211,8 @@ body {
 
 #zone_danger{
 	position:absolute;
-	top:80px;
-	background:rgba(255,0,0,0.2);
+	top:120px;
+	/*background:rgba(255,0,0,0.2);*/
 	width:100vw;
 	height:60px;
 	z-index:88;
